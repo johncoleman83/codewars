@@ -12,24 +12,31 @@ def tokenize(expression):
 class Interpreter:
     def __init__(self):
         self.vars = {}
-        self.assign_operator_functions()
+        self.assign_operators()
 
-    def assign_operator_functions(self):
+    def assign_operators(self):
         self.ops = {
             '*': self.mulitplication,
-            '+': self.addition,
             '/': self.division,
             '%': self.modulo,
+            '+': self.addition,
             '-': self.subtraction,
             '=': self.assignment
+        }
+        self.priority = {
+            '*': 1,
+            '/': 1,
+            '%': 1,
+            '+': 2,
+            '-': 2,
+            '=': 3
         }
 
     def is_float(self, n):
         try:
             float(n)
             return True
-        except ValueError:
-            return False
+        except ValueError: return False
 
     def mulitplication(self, a, b): return a * b
     def addition(self, a, b): return a + b
@@ -47,38 +54,39 @@ class Interpreter:
         if self.is_float(val): return float(val), False
         return val, True
 
-    def input(self, expression):
-        tokens = tokenize(expression)
-        print(tokens)
+    def handle_single_token(self):
+        void, unassigned = self.interpret_val(self.t[0])
+        if unassigned is True:
+            raise Exception("ERROR: Invalid identifier. No variable with name '{}' was found.".format(self.t[0]))
+        return self.t[0]
 
-        if len(tokens) == 0: return ""
-
+    def evaluate_expression(self):
         i = 0
-        while i < len(tokens):
-            if tokens[i] not in self.ops:
-                tokens[i], unassigned = self.interpret_val(tokens[i])
-            i += 1
-
-        if len(tokens) == 1:
-            void, unassigned = self.interpret_val(tokens[0])
-            if unassigned is True:
-                raise Exception("ERROR: Invalid identifier. No variable with name '{}' was found.".format(tokens[0]))
-            return tokens[0]
-
-        # NEED TO HANDLE MULTIPLE EXPRESSIONS
-        i = 0
-        while i < len(tokens):
-            if tokens[i] in self.ops:
-                if tokens[i] != '=':
-                    void, unassigned = self.interpret_val(tokens[i - 1])
-                    if unassigned is True:
-                        raise Exception("ERROR: Invalid identifier. No variable with name '{}' was found.".format(tokens[i - 1]))
-                    void, unassigned = self.interpret_val(tokens[i + 1])
-                    if unassigned is True:
-                        raise Exception("ERROR: Invalid identifier. No variable with name '{}' was found.".format(tokens[i + 1]))
-                r = self.ops[tokens[i]](tokens[i - 1], tokens[i + 1])
+        while i < len(self.t):
+            if self.t[i] in self.ops:
+                if self.priority[self.t[i]]
+                r = self.ops[self.t[i]](self.t[i - 1], self.t[i + 1])
                 return r
             i += 1
+
+    def input(self, expression):
+        self.t = tokenize(expression)
+        if len(self.t) == 0: return ""
+
+        i = 0
+        while i < len(self.t):
+            if self.t[i] not in self.ops:
+                self.t[i], unassigned = self.interpret_val(self.t[i])
+                if unassigned is True and self.t[1] != '=':
+                    raise Exception("ERROR: Invalid identifier. No variable with name '{}' was found.".format(self.t[i]))
+            i += 1
+
+        if len(self.t) == 1:
+            return self.handle_single_token()
+
+        evaluate = self.evaluate_expression()
+        if evaluate is not None:
+            return evaluate
 
         raise Exception('unrecognized input')
 
@@ -86,7 +94,7 @@ interpreter = Interpreter();
 input_ = [
     "1 + 1", "2 - 1", "2 * 3",
     "8 / 4", "7 % 4", "x = 1",
-    "x", ""
+    "x", "", "4 + 2 * 3"
 ]
 for i in input_:
     r = interpreter.input(i)
