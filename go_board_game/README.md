@@ -2,7 +2,9 @@
 
 go board game class built in python
 
-<img src="https://github.com/johncoleman83/go-board-game/blob/master/go-image.jpg" width="400px" height=auto />
+<img src="https://raw.githubusercontent.com/johncoleman83/codewars/master/go_board_game/go-image.jpg"
+width="400px" height=auto />
+
 (credit: [pixabay.com](https://pixabay.com/))
 
 ## Usage

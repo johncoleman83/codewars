@@ -28,8 +28,7 @@ class TicTacToeGame(object):
         """
         retreives winner if there is one
         """
-        rotated = []
-        rotated[:] = zip(*self.board[::-1])
+        rotated = zip(*self.board[::-1])
         for row in self.board:
             if row.count('\x1b[32mX\x1b[30m') == 3 or row.count("\x1b[32mO\x1b[30m") == 3:
                 return row[0]
@@ -88,15 +87,9 @@ class TicTacToeGame(object):
         """
         b = self.board
         options = {
-            1: b[0][0],
-            2: b[0][1],
-            3: b[0][2],
-            4: b[1][0],
-            5: b[1][1],
-            6: b[1][2],
-            7: b[2][0],
-            8: b[2][1],
-            9: b[2][2]
+            1: b[0][0], 2: b[0][1], 3: b[0][2],
+            4: b[1][0], 5: b[1][1], 6: b[1][2],
+            7: b[2][0], 8: b[2][1], 9: b[2][2]
         }
         if "X" in options[position] or "O" in options[position]:
             return False
@@ -155,7 +148,7 @@ def game_loop(game):
         position = input("your selection: ")
         if position.lower() == 'exit':
             break
-        if not position.isdigit() or int(position) > 9 or int(position) < 1:
+        if not position.isdigit() or not 1 <= int(position) <= 9:
             print("\nPlease input a valid position\n")
             continue
         else:
