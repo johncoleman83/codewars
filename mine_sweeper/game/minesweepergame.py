@@ -15,6 +15,10 @@ class MineSweeperGame():
         self.init_vals_and_verify_game_inputs(args[0])
 
     def tokenize(self, s):
+        """
+        tokenizes string input
+        returns all found integers as tokens in string format
+        """
         if s == "":
             return []
         regex = re.compile("([0-9]*)")
@@ -22,6 +26,9 @@ class MineSweeperGame():
         return [s for s in tokens if not s.isspace() and s != '']
 
     def tokenize_input(self, choice):
+        """
+        returns integers from input choice
+        """
         tokens = self.tokenize(choice)
         if len(tokens) == 2:
             return int(tokens[0]), int(tokens[1])
@@ -29,6 +36,9 @@ class MineSweeperGame():
             return None, None
 
     def tokenize_args(self, s):
+        """
+        returns integers from class argument inputs
+        """
         tokens = self.tokenize(s)
         if len(tokens) == 3:
             return int(tokens[0]), int(tokens[1]), int(tokens[2])
@@ -36,6 +46,9 @@ class MineSweeperGame():
             return None, None, None
 
     def init_vals_and_verify_game_inputs(self, args):
+        """
+        init function to handle arguments and initialize class instance attributes
+        """
         w, h, m = self.tokenize_args(args)
         if w is None or h is None or m is None or 5 > h > 24 or 5 > w > 30 or m > h * w:
             raise Exception("invalid game coordinates")
@@ -50,6 +63,10 @@ class MineSweeperGame():
             raise Exception("this board is invalid due to already having been completed")
 
     def display_game(self, reveal=False):
+        """
+        displays game either accounting for hidden values
+        or prints entire game board revealed
+        """
         print("   ", end="")
         for x in range(self.C - 1):
             print(x, end=" ")
@@ -73,6 +90,9 @@ class MineSweeperGame():
                 print(piece if (r, self.C - 1) in self.revealed else '?')
 
     def set_space_values(self):
+        """
+        sets board based on number of mines of each space perimeter
+        """
         for r in range(self.R):
             for c in range(self.C):
                 if self.B[(r, c)] == '*': continue
@@ -98,6 +118,10 @@ class MineSweeperGame():
                 mines -= 1
 
     def initialize_board(self):
+        """
+        creates board of hash table with key = tuples of all coordinates
+        and value = the value of the space of the key coordinates
+        """
         for r in range(self.R):
             for c in range(self.C):
                 self.B[(r, c)] = 0
@@ -105,11 +129,17 @@ class MineSweeperGame():
         self.set_space_values()
 
     def more_unrevealed_spaces(self):
+        """
+        checks if there are more spaces that have not been revealed in the game
+        """
         if len(self.revealed) + self.M < self.R * self.C:
             return True
         return False
 
     def game_loop(self):
+        """
+        main interactive loop reading and responding to player input
+        """
         while self.finished == False:
             self.display_game()
             print("Your move must be an input of 2 space separated integers"
@@ -140,6 +170,9 @@ class MineSweeperGame():
                     self.display_game(reveal=True)
 
 def main_app():
+    """
+    initializes game of previously defined class
+    """
     print("What board dimensions would you like?")
     print("input 3 space separated values: board width, height, and mine count")
     choice = input("e.g. 10 10 10   ")
@@ -148,6 +181,6 @@ def main_app():
 
 if __name__ == "__main__":
     """
-    MAIN APP, calls solve_mine
+    MAIN APP, calls function to create a minesweeper game and begins play
     """
     main_app()
