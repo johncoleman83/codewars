@@ -89,15 +89,11 @@ class TTTBoard():
                 if self.play_position(position) is False:
                     position = None
                     print('invalid game choice, please play again')
-            if self.check_winner() is not None:
-                break
-            if self.plays == 9:
-                break
+            if self.check_winner() is not None:  break
+            if self.plays == 9:                  break
             self.switch_queued_player()
-            while self.computer_play() is False:
-                pass
-            if self.check_winner() is not None:
-                break
+            while self.computer_play() is False: pass
+            if self.check_winner() is not None:  break
             self.switch_queued_player()
         print('and the winner is...')
         print(self.check_winner())
